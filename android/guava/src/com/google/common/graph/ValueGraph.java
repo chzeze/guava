@@ -17,6 +17,7 @@
 package com.google.common.graph;
 
 import com.google.common.annotations.Beta;
+import java.util.Collection;
 import java.util.Set;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
@@ -156,6 +157,8 @@ public interface ValueGraph<N, V> extends BaseGraph<N> {
   /**
    * Returns the nodes which have an incident edge in common with {@code node} in this graph.
    *
+   * <p>This is equal to the union of {@link #predecessors(Object)} and {@link #successors(Object)}.
+   *
    * @throws IllegalArgumentException if {@code node} is not an element of this graph
    */
   @Override
@@ -188,6 +191,8 @@ public interface ValueGraph<N, V> extends BaseGraph<N> {
 
   /**
    * Returns the edges in this graph whose endpoints include {@code node}.
+   *
+   * <p>This is equal to the union of incoming and outgoing edges.
    *
    * @throws IllegalArgumentException if {@code node} is not an element of this graph
    * @since 24.0

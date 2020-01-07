@@ -127,6 +127,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.UUID;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -214,6 +215,7 @@ public final class ArbitraryInstances {
           .put(OptionalInt.class, OptionalInt.empty())
           .put(OptionalLong.class, OptionalLong.empty())
           .put(OptionalDouble.class, OptionalDouble.empty())
+          .put(UUID.class, UUID.randomUUID())
           // common.base
           .put(CharMatcher.class, CharMatcher.none())
           .put(Joiner.class, Joiner.on(','))
@@ -381,7 +383,14 @@ public final class ArbitraryInstances {
     constructor.setAccessible(true); // accessibility check is too slow
     try {
       return constructor.newInstance();
-    } catch (InstantiationException | IllegalAccessException impossible) {
+      /*
+       * Do not merge the 2 catch blocks below. javac would infer a type of
+       * ReflectiveOperationException, which Animal Sniffer would reject. (Old versions of
+       * Android don't *seem* to mind, but there might be edge cases of which we're unaware.)
+       */
+    } catch (InstantiationException impossible) {
+      throw new AssertionError(impossible);
+    } catch (IllegalAccessException impossible) {
       throw new AssertionError(impossible);
     } catch (InvocationTargetException e) {
       logger.log(Level.WARNING, "Exception while invoking default constructor.", e.getCause());
